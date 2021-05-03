@@ -1,22 +1,38 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const validator = require('validator')
 
 const userSchema = mongoose.Schema({
     name : {
         type : String,
         required : true,
-        unique: true,
+        unique: false,
+        validate(value) {
+            if(value.length < 2) {
+                throw new Error('Name is too short')
+            }
+        }
     },
     email : {
         type : String,
         required : true,
-        unique :true
+        unique :true,
+        validate(value) {
+            if(!validator.isEmail(value)) {
+                throw new Error('Invalid Email Adress')
+            }
+        }
     },
     password : {
         type : String,
         required :true,
-        unique : true
+        unique : true,
+        validate(value) {
+            if(!validator.isStrongPassword(value)) {
+                throw new Error('Password must be min 8 chars and include at least 1 Upper,lower,num and symbol')
+            }
+        }
     },
     joined : {
         type : Date,

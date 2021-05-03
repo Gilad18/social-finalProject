@@ -11,8 +11,8 @@ const newPost = async (req,res) => {
        await newPost.save()
        res.status(200).json({success: "New post was Succesfully created" })
    }
-   catch(err) {
-    res.json({err : 'err'})
+   catch(error) {
+    res.json(error)
    }
 }
 
