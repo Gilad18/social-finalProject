@@ -2,9 +2,8 @@ const posts = require('../models/posts.model')
 
 
 const newPost = async (req,res) => {
-   const {author, content , authorID} = req.body
+   const {content , authorID} = req.body
    const newPost = new posts({
-       author : author,
        content : content,
        authorID : authorID
    })
@@ -18,9 +17,28 @@ const newPost = async (req,res) => {
 }
 
 const getAllPosts = async (req,res) => {
+  try{
+      const allPosts = await posts.find({}).populate({path :'authorID', select:['name','avatar']})
+      .populate({path : 'likes', select:['name','avatar']})
+      .populate({path : 'comments.commenter', select:['name','avatar']})
+      .exec(function(err,docs){
+        if(err) return next(err);
+        res.json(docs)
+      })
+      console.log(allPosts)
+  }
+  catch(err) {
+    res.send(err)
+  }
+}
+
+const getPostByID = async (req,res) => {
+  const postid = req.params.id
     try {
-        const allPosts = await posts.find({})
-        res.send(allPosts)
+        const post = await posts.findOne({_id:postid})
+        await post.populate('authorID')
+        console.log(post.authorID.name)
+        res.status(200).json(post)
       }
       catch(err) {
        res.send(err)
@@ -31,11 +49,17 @@ const getAllPosts = async (req,res) => {
      const liker = req.params.id
      const post = req.params.post
      try {
-      //  const didLike = posts.find({'_id':post}, {'likes':liker})
-      //  console.log(didLike.data)
-      const like = await posts.updateOne({_id : post},{$push : {likes : liker}})     
-      await like.save()
-      res.json({success : `new like`})
+       const didLike = await posts.findOne({_id:post}).findOne({likes : {$in : liker}})
+       if(didLike) {
+        const unlike = await posts.updateOne({_id : post},{$pull : {likes : liker}})     
+        await unlike.save()
+        return res.json({success : `unlike`})
+       } else {
+        const like = await posts.updateOne({_id : post},{$push : {likes : liker}})     
+        await like.save()
+        return res.json({success : `new like`})
+       }
+      
      }
      catch(err) {
       res.send(err)
@@ -46,7 +70,7 @@ const getAllPosts = async (req,res) => {
     const commenter = req.params.id
     const {content} = req.body
     try {
-    const comment = await posts.updateOne({_id:post}, {$push : {comments :{author : commenter, content : content}}})
+    const comment = await posts.updateOne({_id:post}, {$push : {comments :{commenter : commenter, content : content}}})
     await comment.save()
     res.json({success : `new comment`})
     }
@@ -58,6 +82,7 @@ const getAllPosts = async (req,res) => {
 
 module.exports = {
   newPost,
+  getPostByID,
   getAllPosts,
   likePost,
   newComment

@@ -14,16 +14,18 @@ usersControllers.loginUser(req,res)
     postsControllers.newPost(req,res)
 }).get('/users', (req,res)=> {
     usersControllers.getAllUsers(req,res)
-}).get('/posts' , (req,res)=> {
-    postsControllers.getAllPosts(req,res)
+}).get('/post/:id' , (req,res)=> {
+    postsControllers.getPostByID(req,res)
 }).get('/profile/:id' , (req,res)=> {
-    usersControllers.getUserByID(req,res)
+    usersControllers.getUserByID(req,res)                 
 }).put('/:id/:post/like' , (req,res) => {
     postsControllers.likePost(req,res)
 }).put('/:id/:post/comment' , (req,res)=> {
     postsControllers.newComment(req,res)
 }).put('/:follower/:following/follow' , (req,res) => {
     usersControllers.follow(req,res)
+}).get('/posts' , (req,res) => {
+    postsControllers.getAllPosts(req,res)
 })
 
 

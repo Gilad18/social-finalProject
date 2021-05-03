@@ -30,21 +30,11 @@ const userSchema = mongoose.Schema({
         unique : false
     },
     avatar : {
-        type : Buffer,
-        required : false,
-        unique : false
+        type : Buffer
     },
-    following : {
-        type : Array,
-        required:false,
-        unique:false
-    },
-    followers : {
-        type: Array,
-        required:false,
-        unique:false
-    },
-    tokens :[{
+    following :[{type : mongoose.Schema.Types.ObjectId,ref : 'users'}]
+    ,followers :[{type : mongoose.Schema.Types.ObjectId,ref : 'users'}]
+    ,tokens :[{
         token : {
             type: String,
             required: true

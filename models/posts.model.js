@@ -1,23 +1,19 @@
 const mongoose = require('mongoose');
 
 const postSchema = mongoose.Schema({
-    author : {
-        type : String,
-        required : true,
-        unique: false,
-    },
     authorID : {
-        type : String,
+        type : mongoose.Schema.Types.ObjectId ,
         required : true,
         unique: false,
+        ref : 'users'
     },
     content : {
         type : String,
         required : true,
         unique: false,
     },
-    likes :   [String],
-    comments :[{author:String , content:String}],
+    likes :   [{type : mongoose.Schema.Types.ObjectId,ref : 'users'}],
+    comments :[{ commenter :{type : mongoose.Schema.Types.ObjectId,ref : 'users'}, content:String}],
     image : {
         type : Buffer,
         required : false,

@@ -43,8 +43,11 @@ const getAllUsers = async (req, res) => {
 const getUserByID = async (req, res) => {
   const id = req.params.id
   try {
-    const user = await users.findOne({ _id: id })       //add password to approve login
-    res.status(200).json({ user })
+    const user = await users.findOne({ _id: id }).populate({path : 'following', select:['name','avatar']})
+    .populate({path : 'followers', select:['name','avatar']}).exec(function(err,docs){
+      if(err) return next(err);
+      res.json(docs)       
+    })
   }
   catch (err) {
     res.status(400).json({ error: "user does not exist" })
