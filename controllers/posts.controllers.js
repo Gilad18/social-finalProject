@@ -37,7 +37,6 @@ const getPostByID = async (req,res) => {
     try {
         const post = await posts.findOne({_id:postid})
         await post.populate('authorID')
-        console.log(post.authorID.name)
         res.status(200).json(post)
       }
       catch(err) {

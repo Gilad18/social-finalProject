@@ -12,7 +12,7 @@ router.post('/signin' , (req,res) => {
 usersControllers.loginUser(req,res)
 }).post('/profile/newpost' , (req,res) => {
     postsControllers.newPost(req,res)
-}).get('/users', (req,res)=> {
+}).get('/users', auth , (req,res)=> {
     usersControllers.getAllUsers(req,res)
 }).get('/post/:id' , (req,res)=> {
     postsControllers.getPostByID(req,res)

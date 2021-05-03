@@ -10,7 +10,7 @@ const auth = async (req,res,next) => {
           if(!user) {
               throw new Error('Please authenticate')
           }
-          
+          console.log(user)
           next()
       }
       catch(err) {

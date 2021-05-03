@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-// const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const userSchema = mongoose.Schema({
@@ -50,31 +50,31 @@ userSchema.methods.generateToken = async function () {
     return token
 }
 
-// userSchema.statics.findByCredentials = async (givenEmail,givenPassword) => {
-//     const user = await accountModel.findOne({email:givenEmail})
+userSchema.statics.findByCredentials = async (givenEmail,givenPassword) => {
+    const user = await userModel.findOne({email:givenEmail})
 
-//     if(!user) {
-//         throw new  Error('Unable to login')
-//     }
+    if(!user) {
+        throw new  Error('Unable to login')
+    }
 
-//     const isMatch = await bcrypt.compare(givenPassword , user.password)
+    const isMatch = await bcrypt.compare(givenPassword , user.password)
 
-//     if(!isMatch) {
-//         throw new Error('Unable to Login')
-//     }
+    if(!isMatch) {
+        throw new Error('Unable to Login')
+    }
 
-//     return user
-// }
+    return user
+}
 
-// userSchema.pre('save', async function (next) {
-//     const user = this
+userSchema.pre('save', async function (next) {
+    const user = this
  
-//     if(user.isModified('password')) {
-//         user.password = await bcrypt.hash(user.password, 8)
-//     }
+    if(user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 8)
+    }
  
-//     next()
-//  })
+    next()
+ })
 
 const userModel  = mongoose.model('users',userSchema);
 module.exports= userModel;

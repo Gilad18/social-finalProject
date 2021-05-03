@@ -20,7 +20,7 @@ const createNewUser = async (req, res) => {
 const loginUser = async (req, res) => {
   const { email, password } = req.body
   try {
-    const user = await users.findOne({ email: email })       //add password to approve login
+    const user = await users.findByCredentials(email,password)
     const token = await user.generateToken()
     res.status(200).json({ success: "Yoou now logged in", token, user })
   }
